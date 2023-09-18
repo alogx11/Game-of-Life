@@ -6,10 +6,10 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   columns = Math.floor(windowWidth / cellSize);
   rows = Math.floor(windowHeight / cellSize);
+  createGrid();
 }
 
 function draw() {
-  createGrid();
   displayGrid();
 }
 function displayGrid() {
@@ -17,10 +17,12 @@ function displayGrid() {
     for (let j = 0; j < rows; j++) {
       let c = grid[i][j] == 1 ? 0 : 255;
       fill(c);
-      rect(i * cellSize, j * cellSize, cellSize);
+      rect(i * cellSize, j * cellSize, cellSize, cellSize);
     }
   }
 }
+
+function countNeighbors(x, y) {}
 
 function createGrid() {
   grid = new Array(columns);
@@ -28,7 +30,7 @@ function createGrid() {
     grid[i] = new Array(rows);
     grid[i].fill(0);
     for (let j = 0; j < rows; j++) {
-      grid[i][j] = Math.floor(Math.random(0, 2));
+      grid[i][j] = Math.floor(Math.random() * 2);
       print(grid[i][j]);
     }
   }
@@ -36,6 +38,7 @@ function createGrid() {
   function mousePressed() {
     let x = Math.floor(mouseX / cellSize);
     let y = Math.floor(mouseY / cellSize);
-    grid[x][y] = 1;
+    grid[x][y] = !grid[x][y];
+    print(grid[x][y]);
   }
 }
