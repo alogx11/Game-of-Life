@@ -2,24 +2,29 @@
 let grid, nextGrid;
 let columns, rows;
 let generate = false;
+let aliveColor, bgColor;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   columns = Math.floor(windowWidth / cellSize);
   rows = Math.floor(windowHeight / cellSize);
   createGrid();
+  aliveColor = color(0);
+  bgColor = 255;
 }
 
 function draw() {
+  background(bgColor);
   displayGrid();
   if (generate) {
     computeGeneration();
   }
 }
+
 function displayGrid() {
   for (let i = 0; i < columns; i++) {
     for (let j = 0; j < rows; j++) {
-      let c = grid[i][j] == 1 ? 0 : 255;
+      let c = grid[i][j] == 1 ? aliveColor : bgColor;
       fill(c);
       rect(i * cellSize, j * cellSize, cellSize, cellSize);
     }
@@ -72,7 +77,7 @@ function createGrid() {
     nextGrid[i].fill(0);
     for (let j = 0; j < rows; j++) {
       let x = Math.random();
-      if (x > 0.8) {
+      if (x > 0.5) {
         grid[i][j] = 1;
       } else {
         grid[i][j] == 0;
@@ -94,11 +99,31 @@ function mousePressed() {
   print(grid[x][y]);
 }
 
+function getRandomColor() {
+  let c = color(
+    Math.floor(Math.random() * 255),
+    Math.floor(Math.random() * 255),
+    Math.floor(Math.random() * 255)
+  );
+  return c;
+}
+
 function keyPressed() {
   if (key == " ") {
     generate = !generate;
   } else if (key == "s") {
     computeGeneration();
     generate = false;
+  } else if (key == "c") {
+    for (let i = 0; i < grid.length; i++) {
+      grid[i].fill(0);
+    }
+  } else if (key == "r") {
+    createGrid();
+  } else if (key == "f") {
+    bgColor = getRandomColor();
+    aliveColor = getRandomColor();
+    stroke(aliveColor);
+  } else if (key == "g") {
   }
 }
