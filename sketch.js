@@ -30,6 +30,7 @@ function displayGrid() {
     }
   }
 }
+
 function computeGeneration() {
   for (let i = 0; i < columns; i++) {
     for (let j = 0; j < rows; j++) {
@@ -51,16 +52,9 @@ function computeGeneration() {
 
 function countNeighbors(x, y) {
   let count = 0;
-  // moveCol = [-1, 0, 1, 1, 1, 0, -1];
-  // moveRow = [-1, -1, -1, 0, 1, 1, 1, 0];
-  // for (let i = 0; i < moveCol.length; i++) {
-  //   count += grid[(x + moveCol[i], y + moveRow[i])];
-  // }
-  // return count;
-
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
-      if (i == 0 && j == 0) continue;
+      if (i == 0 && j == 0) continue; // check ordered pairs aound x,y
       count += grid[(x + i + columns) % columns][(y + j + rows) % rows];
     }
   }
@@ -68,14 +62,14 @@ function countNeighbors(x, y) {
 }
 
 function createGrid() {
-  grid = new Array(columns);
-  nextGrid = new Array(columns);
+  grid = new Array(columns); // create array of length columns of arrays.
+  nextGrid = new Array(columns); // create second array where we store computed values
   for (let i = 0; i < grid.length; i++) {
-    grid[i] = new Array(rows);
-    grid[i].fill(0);
+    grid[i] = new Array(rows); // set length of each column
+    grid[i].fill(0); // fill each column full of 0s
     nextGrid[i] = new Array(rows);
     nextGrid[i].fill(0);
-    for (let j = 0; j < rows; j++) {
+    for (let j = 0; j < rows; j++) { //randomly fill each cell with a 1 or 0
       let x = Math.random();
       if (x > 0.5) {
         grid[i][j] = 1;
@@ -86,20 +80,17 @@ function createGrid() {
   }
 }
 
-function mousePressed() {
+function mousePressed() { //flip the state of cell when clicked on
   let x = Math.floor(mouseX / cellSize);
   let y = Math.floor(mouseY / cellSize);
-  print(grid[x][y]);
-  print(grid[x][y] == 1);
   if (grid[x][y] == 1) {
     grid[x][y] = 0;
   } else {
     grid[x][y] = 1;
   }
-  print(grid[x][y]);
 }
 
-function getRandomColor() {
+function getRandomColor() { // generate three random values for rgb
   let c = color(
     Math.floor(Math.random() * 255),
     Math.floor(Math.random() * 255),
@@ -109,21 +100,39 @@ function getRandomColor() {
 }
 
 function keyPressed() {
-  if (key == " ") {
+  if (key == " ") { // start and stop generation
     generate = !generate;
-  } else if (key == "s") {
+  } else if (key == "s") { // compute one generation 
     computeGeneration();
     generate = false;
-  } else if (key == "c") {
+  } else if (key == "c") { // clear the grid
     for (let i = 0; i < grid.length; i++) {
-      grid[i].fill(0);
+      grid[i].fill(0); // fill each array full of zeros to clear
     }
-  } else if (key == "r") {
+  } else if (key == "r") { // reset grid
     createGrid();
-  } else if (key == "f") {
-    bgColor = getRandomColor();
-    aliveColor = getRandomColor();
+  } else if (key == "f") { // create random theme
+    bgColor = getRandomColor(); // change background color
+    aliveColor = getRandomColor(); //change color of alive cells
     stroke(aliveColor);
-  } else if (key == "g") {
+  } else if (key == "g") { // create a glider in a random spot
+    /* glider shape
+    O X O
+    O O X
+    X X X
+    */
+    let x = Math.floor(Math.random() * columns);
+    let y = Math.floor(Math.random() * rows);
+    print(x + ' ' + y);
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        print ((i == 0 && j == -1) || (i == 1 && j == 0) || j == 1);
+        if ((i == 0 && j == -1) || (i == 1 && j == 0) || j == 1) { // cases where cell is alive
+          grid[(x + i + columns) % columns][(y + j + rows) % rows] = 1;
+        } else { // cell is dead
+          grid[(x + i + columns) % columns][(y + j + rows) % rows] = 0;
+        }
+      }
+    }
   }
 }
